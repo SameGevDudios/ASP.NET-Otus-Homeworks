@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.Administration;
+using PromoCodeFactory.DataAccess.Data;
 using PromoCodeFactory.WebHost.Models;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PromoCodeFactory.WebHost.Controllers
 {
@@ -69,6 +71,44 @@ namespace PromoCodeFactory.WebHost.Controllers
             };
 
             return employeeModel;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateEmployeeAsync(
+            [FromQuery] string email, [FromQuery] string firstName, [FromQuery] string lastName, [FromQuery] List<string> roles)
+        {
+            Employee employee = new Employee()
+            {
+                Id = Guid.NewGuid(),
+                Email = email,
+                FirstName = firstName,
+                LastName = lastName,
+                Roles = FakeDataFactory.Roles.Where(x => roles.Contains(x.Name))
+                .DefaultIfEmpty(new Role() { Id = Guid.NewGuid(), Name = "InvalidRole"})
+                .ToList(),
+            };
+            await _employeeRepository.AddAsync(employee);
+            return CreatedAtAction("GetEmployeeById", new { id = employee.Id },
+                new EmployeeShortResponse() { Email = employee.Email, FullName = employee.FullName, });
+        }
+
+        [HttpPut("{id:guid}")]
+        public async Task<ActionResult> UpdateEmployeeFullNameAsync(Guid id, [FromQuery] string firstName, [FromQuery] string lastName)
+        {
+            var employee = await _employeeRepository.GetByIdAsync(id);
+            employee.FirstName = firstName;
+            employee.LastName = lastName;
+            await _employeeRepository.UpdateByIdAsync(id, employee);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult> DeleteEmployeeByIdAsync(Guid id)
+        {
+            await _employeeRepository.RemoveByIdAsync(id);
+
+            return NoContent();
         }
     }
 }
