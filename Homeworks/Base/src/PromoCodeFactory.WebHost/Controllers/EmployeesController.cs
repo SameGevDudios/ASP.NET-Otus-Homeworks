@@ -98,6 +98,7 @@ namespace PromoCodeFactory.WebHost.Controllers
             var employee = await _employeeRepository.GetByIdAsync(id);
             employee.FirstName = firstName;
             employee.LastName = lastName;
+            await _employeeRepository.UpdateByIdAsync(id, employee);
 
             return NoContent();
         }
