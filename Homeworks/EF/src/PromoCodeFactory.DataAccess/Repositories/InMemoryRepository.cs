@@ -36,10 +36,10 @@ namespace PromoCodeFactory.DataAccess.Repositories
             return Task.FromResult(item);
         }
 
-        public Task<T> UpdateByIdAsync(Guid id, T item)
+        public Task UpdateAsync(T item)
         {
             var dataList = Data.ToList();
-            var dataItem = Data.FirstOrDefault(x => x.Id == id);
+            var dataItem = Data.FirstOrDefault(x => x.Id == item.Id);
             dataItem = item;
             return Task.FromResult(dataItem);
         }
