@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using PromoCodeFactory.DataAccess.DbContexts;
 using PromoCodeFactory.Core.Abstractions.Repositories;
