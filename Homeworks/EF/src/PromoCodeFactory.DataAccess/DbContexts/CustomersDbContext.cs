@@ -3,7 +3,7 @@ using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 
 namespace PromoCodeFactory.DataAccess.DbContexts
 {
-    internal class CustomersDbContext : DbContext
+    public class CustomersDbContext : DbContext
     {
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerPreference> CustomersPreference { get; set; }
