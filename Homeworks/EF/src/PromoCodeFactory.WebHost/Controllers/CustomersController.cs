@@ -97,7 +97,7 @@ namespace PromoCodeFactory.WebHost.Controllers
                 Email = request.Email
             };
 
-            var customerPreferences = await CreateCustomerPreferencesAsync(request.PreferenceIds, customer);
+            var customerPreferences = await CreateCustomerPreferencesAsync(request.PreferenceIds, customer.Id);
             // Assign customer preferences
             customer.CustomerPreferences = customerPreferences;
 
@@ -134,7 +134,7 @@ namespace PromoCodeFactory.WebHost.Controllers
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
                 Email = customer.Email,
-                CustomerPreferences = await CreateCustomerPreferencesAsync(request.PreferenceIds, customer),
+                CustomerPreferences = await CreateCustomerPreferencesAsync(request.PreferenceIds, customer.Id),
                 Promocodes = customer.Promocodes
             };
 
@@ -154,21 +154,16 @@ namespace PromoCodeFactory.WebHost.Controllers
             return NoContent();
         }
 
-        private async Task<List<CustomerPreference>> CreateCustomerPreferencesAsync(List<Guid> preferenceIds, Customer customer)
+        private async Task<List<CustomerPreference>> CreateCustomerPreferencesAsync(List<Guid> preferenceIds, Guid customerId)
         {
-            // Get relevant preferences to request
-            var preferenceTasks = preferenceIds
-                .Select(_preferenceRepository.GetByIdAsync);
-            var preferences = (await Task.WhenAll(preferenceTasks)).ToList();
-
             // Create new customer preferences
-            var customerPreferenceTasks = preferences.Select(async preference =>
+            var customerPreferenceTasks = preferenceIds.Select(async preference =>
                 await _customerPreferenceRepository.AddAsync(
                     new CustomerPreference()
                     {
                         Id = Guid.NewGuid(),
-                        Customer = customer,
-                        Preference = preference
+                        CustomerId = customerId,
+                        PreferenceId = preference
                     }));
             var customerPreferences = (await Task.WhenAll(customerPreferenceTasks)).ToList();
             return customerPreferences;

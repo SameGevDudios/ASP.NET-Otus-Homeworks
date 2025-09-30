@@ -23,11 +23,15 @@ namespace PromoCodeFactory.DataAccess.DbContexts
 
             modelBuilder.Entity<Customer>()
                 .HasMany(pr => pr.CustomerPreferences)
-                .WithOne(c => c.Customer);
+                .WithOne(c => c.Customer)
+                .HasForeignKey(c => c.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Preference>()
                 .HasMany(pr => pr.CustomerPreferences)
-                .WithOne(p => p.Preference);
+                .WithOne(p => p.Preference)
+                .HasForeignKey(p => p.PreferenceId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
