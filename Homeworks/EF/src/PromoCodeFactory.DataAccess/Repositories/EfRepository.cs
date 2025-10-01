@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PromoCodeFactory.DataAccess.Repositories
 {
-    internal class EfRepository<T> : IRepository<T> where T : BaseEntity
+    public class EfRepository<T> : IRepository<T> where T : BaseEntity
     {
         private CustomersDbContext _customerDbContext;
 
