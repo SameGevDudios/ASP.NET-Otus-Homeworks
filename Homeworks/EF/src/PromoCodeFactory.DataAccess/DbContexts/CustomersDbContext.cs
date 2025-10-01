@@ -10,7 +10,7 @@ namespace PromoCodeFactory.DataAccess.DbContexts
         public DbSet<Preference> Preferences { get; set; }
         public DbSet<PromoCode> PromoCodes { get; set; }
 
-        CustomersDbContext(DbContextOptions<CustomersDbContext> options) : base(options)
+        public CustomersDbContext(DbContextOptions<CustomersDbContext> options) : base(options)
         {
         }
 
@@ -32,6 +32,7 @@ namespace PromoCodeFactory.DataAccess.DbContexts
                 .WithOne(p => p.Preference)
                 .HasForeignKey(p => p.PreferenceId)
                 .OnDelete(DeleteBehavior.Cascade);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
