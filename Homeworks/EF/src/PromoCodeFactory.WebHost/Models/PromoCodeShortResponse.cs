@@ -5,6 +5,8 @@ namespace PromoCodeFactory.WebHost.Models
     public class PromoCodeShortResponse
     {
         public Guid Id { get; set; }
+        
+        public Guid CustomerGuid { get; set; }
 
         public string Code { get; set; }
 
