@@ -20,17 +20,14 @@ namespace PromoCodeFactory.WebHost.Controllers
 
         private IRepository<Customer> _customerRepository;
         private IRepository<CustomerPreference> _customerPreferenceRepository;
-        private IRepository<Preference> _preferenceRepository;
 
         public CustomersController(
             IRepository<Customer> customerRepository, 
-            IRepository<CustomerPreference> customerPreferenceRepository,
-            IRepository<Preference> preferenceRepository
+            IRepository<CustomerPreference> customerPreferenceRepository
             )
         {
             _customerRepository = customerRepository; 
             _customerPreferenceRepository = customerPreferenceRepository;
-            _preferenceRepository = preferenceRepository;
         }
 
         /// <summary>
