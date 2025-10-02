@@ -172,6 +172,14 @@ namespace PromoCodeFactory.DataAccess.Data
                 customer.Promocodes = _promoCodes.Where(pc => pc.Customer.Id == customer.Id).ToList();
                 customer.CustomerPreferences = _customerPreferences.Where(cp => cp.CustomerId == customer.Id).ToList();
             }
+            foreach (var preference in _preferences)
+            {
+                preference.CustomerPreferences = _customerPreferences.Where(cp => cp.PreferenceId  == preference.Id).ToList();
+            }
+            foreach(var employee  in _employees)
+            {
+                employee.PromoCodes = _promoCodes.Where(p => p.PartnerManager.Id == employee.Id).ToList();
+            }
         }
 
         public static IEnumerable<Employee> Employees => _employees;
