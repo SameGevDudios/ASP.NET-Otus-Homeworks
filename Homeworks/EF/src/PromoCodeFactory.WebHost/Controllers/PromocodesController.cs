@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using PromoCodeFactory.Core.Abstractions;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using PromoCodeFactory.WebHost.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PromoCodeFactory.WebHost.Controllers
 {
@@ -17,18 +18,28 @@ namespace PromoCodeFactory.WebHost.Controllers
     public class PromocodesController
         : ControllerBase
     {
+
+        private IRepository<PromoCode> _promoCodeRepository;
+        private IRepository<CustomerPreference> _customerPreferenceRepository;
+        private IRepository<Customer> _customerRepository;
+        private ICodeGenerator _codeGenerator;
+
+        public PromocodesController(
+            IRepository<PromoCode> promoCodeRepository,
+            IRepository<CustomerPreference> customerPreferenceRepository,
+            IRepository<Customer> customerRepository,
+            ICodeGenerator codeGenerator)
+        {
+            _promoCodeRepository = promoCodeRepository;
+            _customerPreferenceRepository = customerPreferenceRepository;
+            _customerRepository = customerRepository;
+            _codeGenerator = codeGenerator;
+        }
+
         /// <summary>
         /// Получить все промокоды
         /// </summary>
         /// <returns></returns>
-
-        private IRepository<PromoCode> _promoCodeRepository;
-
-        public PromocodesController(IRepository<PromoCode> promoCodeRepository)
-        {
-            _promoCodeRepository = promoCodeRepository;
-        }
-        
         [HttpGet]
         public async Task<ActionResult<List<PromoCodeShortResponse>>> GetPromocodesAsync()
         {
@@ -51,10 +62,45 @@ namespace PromoCodeFactory.WebHost.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public Task<IActionResult> GivePromoCodesToCustomersWithPreferenceAsync(GivePromoCodeRequest request)
+        public async Task<IActionResult> GivePromoCodesToCustomersWithPreferenceAsync(GivePromoCodeRequest request)
         {
-            //TODO: Создать промокод и выдать его клиентам с указанным предпочтением
-            throw new NotImplementedException();
+            var customers = (await _customerPreferenceRepository.GetAllAsync()) // Get all customer preferences
+                .Where(cp => cp.Preference.Name == request.Preference) // Get requested preference entries
+                .Select(cp => cp.Customer); // Get customers
+            List<PromoCodeShortResponse> promoCodeResponseList = new();
+            Console.WriteLine($"customers: {customers.Count()}");
+            foreach (var customer in customers)
+            {
+                PromoCode promoCode = new PromoCode()
+                {
+                    Id = Guid.NewGuid(),
+                    BeginDate = DateTime.Now,
+                    EndDate = DateTime.Now.AddDays(14),
+                    Code = String.IsNullOrEmpty(request.PromoCode) ? _codeGenerator.Code() : request.PromoCode,
+                    Customer = customer,
+                    ServiceInfo = request.ServiceInfo,
+                    PartnerName = request.PartnerName,
+                    PartnerManager = null // todo
+                };
+
+                customer.Promocodes.Add(promoCode);
+                await _promoCodeRepository.AddAsync(promoCode);
+                await _customerRepository.UpdateAsync(customer);
+
+                promoCodeResponseList.Add(
+                    new PromoCodeShortResponse()
+                    {
+                        Id = promoCode.Id,
+                        Code = promoCode.Code,
+                        BeginDate = promoCode.BeginDate.ToString(),
+                        EndDate = promoCode.EndDate.ToString(),
+                        PartnerName = promoCode.PartnerName,
+                        ServiceInfo = promoCode.ServiceInfo,
+                        CustomerGuid = promoCode.Customer.Id
+                    });
+            }
+
+            return CreatedAtAction("GetPromocodes", null, promoCodeResponseList);
         }
     }
 }
