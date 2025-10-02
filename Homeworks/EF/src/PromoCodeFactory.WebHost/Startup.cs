@@ -49,9 +49,7 @@ namespace PromoCodeFactory.WebHost
                 dbContext.Database.EnsureCreated();
 
                 dbContext.Preferences.AddRange(FakeDataFactory.Preferences);
-                dbContext.PromoCodes.AddRange(FakeDataFactory.PromoCodes);
                 dbContext.Customers.AddRange(FakeDataFactory.Customers);
-                dbContext.CustomersPreference.AddRange(FakeDataFactory.CustomersPreferences);
                 dbContext.SaveChanges();
             }
 
