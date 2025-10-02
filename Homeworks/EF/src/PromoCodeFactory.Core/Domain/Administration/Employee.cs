@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PromoCodeFactory.Core.Domain.PromoCodeManagement;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PromoCodeFactory.Core.Domain.Administration
@@ -20,6 +22,8 @@ namespace PromoCodeFactory.Core.Domain.Administration
 
         [Required]
         public Role Role { get; set; }
+
+        public ICollection<PromoCode> PromoCodes { get; set; }
 
         public int AppliedPromocodesCount { get; set; }
     }
