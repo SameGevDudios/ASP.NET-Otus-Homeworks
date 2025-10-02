@@ -93,13 +93,16 @@ namespace PromoCodeFactory.WebHost.Controllers
                 LastName = request.LastName,
                 Email = request.Email
             };
+            
+            // Create parent entity
+            await _customerRepository.AddAsync(customer);
 
+            // Create child entity
             var customerPreferences = await CreateCustomerPreferencesAsync(request.PreferenceIds, customer.Id);
-            // Assign customer preferences
+            // Tie up reverse relations
             customer.CustomerPreferences = customerPreferences;
 
-            // Save a new customer
-            await _customerRepository.AddAsync(customer);
+            await _customerRepository.UpdateAsync(customer);
 
             // Return 201 response code
             return CreatedAtAction("GetCustomer", new { customer.Id },
