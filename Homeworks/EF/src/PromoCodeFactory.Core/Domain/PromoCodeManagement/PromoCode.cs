@@ -24,12 +24,10 @@ namespace PromoCodeFactory.Core.Domain.PromoCodeManagement
         [Required, MaxLength(30)]
         public string PartnerName { get; set; }
 
-        [Required]
-        public Employee PartnerManager { get; set; }
+        public Employee? PartnerManager { get; set; }
 
-        public Preference Preference { get; set; }
+        public Preference? Preference { get; set; }
 
-        [Required]
-        public Customer Customer { get; set; }
+        public Customer? Customer { get; set; }
     }
 }

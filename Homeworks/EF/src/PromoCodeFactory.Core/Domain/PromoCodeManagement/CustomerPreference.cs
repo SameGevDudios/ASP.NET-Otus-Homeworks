@@ -7,15 +7,12 @@ namespace PromoCodeFactory.Core.Domain.PromoCodeManagement
     [Table("CustomerPreferences")]
     public class CustomerPreference : BaseEntity
     {
-        [Required]
-        public Guid CustomerId { get; set; }
-        [Required]
-        public Customer Customer { get; set; }
+        public Guid? CustomerId { get; set; }
 
-        [Required]
-        public Guid PreferenceId { get; set; }
+        public Customer? Customer { get; set; }
 
-        [Required]
-        public Preference Preference { get; set; }
+        public Guid? PreferenceId { get; set; }
+
+        public Preference? Preference { get; set; }
     }
 }
