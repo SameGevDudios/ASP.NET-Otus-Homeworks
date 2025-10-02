@@ -54,7 +54,7 @@ namespace PromoCodeFactory.WebHost.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}", Name = "GetCustomer")]
         public async Task<ActionResult<CustomerResponse>> GetCustomerAsync(Guid id)
         {
             var customer = await _customerRepository.GetByIdAsync(id);
@@ -85,10 +85,11 @@ namespace PromoCodeFactory.WebHost.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCustomerAsync(CreateOrEditCustomerRequest request)
         {
+            Guid id = Guid.NewGuid();
             // Create a new customer
             var customer = new Customer()
             {
-                Id = Guid.NewGuid(),
+                Id = id,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Email = request.Email
@@ -105,14 +106,16 @@ namespace PromoCodeFactory.WebHost.Controllers
             await _customerRepository.UpdateAsync(customer);
 
             // Return 201 response code
-            return CreatedAtAction("GetCustomer", new { customer.Id },
-                new CustomerShortResponse
-                {
-                    FirstName = customer.FirstName,
-                    LastName = customer.LastName,
-                    Email = customer.Email
-
-                });
+            return CreatedAtRoute(
+            routeName: "GetCustomer",
+            routeValues: new { id = customer.Id },
+            value: new CustomerShortResponse
+            {
+                Id = customer.Id,
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Email = customer.Email
+            });
         }
 
         /// <summary>
