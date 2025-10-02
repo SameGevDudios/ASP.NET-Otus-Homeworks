@@ -8,6 +8,8 @@ using PromoCodeFactory.DataAccess.DbContexts;
 using PromoCodeFactory.DataAccess.Repositories;
 using PromoCodeFactory.DataAccess.Data;
 using Microsoft.EntityFrameworkCore.Proxies;
+using PromoCodeFactory.Core.Abstractions;
+using PromoCodeFactory.Core.Random;
 
 namespace PromoCodeFactory.WebHost
 {
@@ -25,6 +27,7 @@ namespace PromoCodeFactory.WebHost
             );
             
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped(typeof(ICodeGenerator), typeof(HexPromoCodeGenerator));
 
             services.AddOpenApiDocument(options =>
             {
