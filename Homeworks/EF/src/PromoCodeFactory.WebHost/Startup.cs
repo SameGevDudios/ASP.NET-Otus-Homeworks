@@ -7,6 +7,7 @@ using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.DataAccess.DbContexts;
 using PromoCodeFactory.DataAccess.Repositories;
 using PromoCodeFactory.DataAccess.Data;
+using Microsoft.EntityFrameworkCore.Proxies;
 
 namespace PromoCodeFactory.WebHost
 {
@@ -18,9 +19,11 @@ namespace PromoCodeFactory.WebHost
         {
             services.AddControllers();
 
-            services.AddDbContext<CustomersDbContext>(options =>
-                options.UseSqlite("Data Source=PromoCodesFactory.sqlite"));
-
+            services.AddDbContext<CustomersDbContext>(options => options
+            .UseSqlite("Data Source=PromoCodesFactory.sqlite")
+            .UseLazyLoadingProxies()
+            );
+            
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
             services.AddOpenApiDocument(options =>

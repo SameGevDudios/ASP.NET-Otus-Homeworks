@@ -14,6 +14,6 @@ namespace PromoCodeFactory.Core.Domain.Administration
         [MaxLength(30)]
         public string Description { get; set; }
 
-        public ICollection<Employee> Employees { get; set; }
+        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }

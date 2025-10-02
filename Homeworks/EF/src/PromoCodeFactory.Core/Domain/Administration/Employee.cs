@@ -21,9 +21,9 @@ namespace PromoCodeFactory.Core.Domain.Administration
         public string Email { get; set; }
 
         [Required]
-        public Role Role { get; set; }
+        public virtual Role Role { get; set; }
 
-        public ICollection<PromoCode> PromoCodes { get; set; }
+        public virtual ICollection<PromoCode> PromoCodes { get; set; } = new List<PromoCode>();
 
         public int AppliedPromocodesCount { get; set; }
     }

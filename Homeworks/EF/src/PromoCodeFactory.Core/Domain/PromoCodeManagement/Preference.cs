@@ -11,6 +11,6 @@ namespace PromoCodeFactory.Core.Domain.PromoCodeManagement
         [Required, MaxLength(30)]
         public string Name { get; set; }
 
-        public ICollection<CustomerPreference> CustomerPreferences { get; set; }
+        public virtual ICollection<CustomerPreference> CustomerPreferences { get; set; }
     }
 }
