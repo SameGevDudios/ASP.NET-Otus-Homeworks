@@ -10,6 +10,7 @@ using PromoCodeFactory.DataAccess.Data;
 using Microsoft.EntityFrameworkCore.Proxies;
 using PromoCodeFactory.Core.Abstractions;
 using PromoCodeFactory.Core.Random;
+using System.Linq;
 
 namespace PromoCodeFactory.WebHost
 {
@@ -51,12 +52,18 @@ namespace PromoCodeFactory.WebHost
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetService<CustomersDbContext>();
-                dbContext.Database.EnsureDeleted();
+                
+                // Disabled for Homework task 8
+                // dbContext.Database.EnsureDeleted();
+                
                 dbContext.Database.EnsureCreated();
 
-                dbContext.Preferences.AddRange(FakeDataFactory.Preferences);
-                dbContext.Customers.AddRange(FakeDataFactory.Customers);
-                dbContext.SaveChanges();
+                if (!dbContext.Customers.Any())
+                {
+                    dbContext.Preferences.AddRange(FakeDataFactory.Preferences);
+                    dbContext.Customers.AddRange(FakeDataFactory.Customers);
+                    dbContext.SaveChanges();
+                }
             }
 
             app.UseOpenApi();
