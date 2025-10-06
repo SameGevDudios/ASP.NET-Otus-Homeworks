@@ -48,7 +48,6 @@ namespace PromoCodeFactory.WebHost.Controllers
                 new PromoCodeShortResponse()
                 {
                     Id = promoCode.Id,
-                    CustomerGuid = promoCode.Customer.Id,
                     Code = promoCode.Code,
                     BeginDate = promoCode.BeginDate.ToString(),
                     EndDate = promoCode.EndDate.ToString(),
@@ -96,7 +95,6 @@ namespace PromoCodeFactory.WebHost.Controllers
                         EndDate = promoCode.EndDate.ToString(),
                         PartnerName = promoCode.PartnerName,
                         ServiceInfo = promoCode.ServiceInfo,
-                        CustomerGuid = promoCode.Customer.Id
                     });
             }
 
