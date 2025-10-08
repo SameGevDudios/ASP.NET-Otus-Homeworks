@@ -18,8 +18,8 @@ namespace PromoCodeFactory.WebHost.Controllers
         : ControllerBase
     {
 
-        private IRepository<Customer> _customerRepository;
-        private IRepository<CustomerPreference> _customerPreferenceRepository;
+        private readonly IRepository<Customer> _customerRepository;
+        private readonly IRepository<CustomerPreference> _customerPreferenceRepository;
 
         public CustomersController(
             IRepository<Customer> customerRepository, 

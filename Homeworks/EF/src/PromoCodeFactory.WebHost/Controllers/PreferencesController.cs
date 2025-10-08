@@ -15,7 +15,7 @@ namespace PromoCodeFactory.WebHost.Controllers
     [Route("api/v1/[controller]")]
     public class PreferencesController : Controller
     {
-        private IRepository<Preference> _preferenceRepository;
+        private readonly IRepository<Preference> _preferenceRepository;
 
         public PreferencesController(IRepository<Preference> preferenceRepository)
         {

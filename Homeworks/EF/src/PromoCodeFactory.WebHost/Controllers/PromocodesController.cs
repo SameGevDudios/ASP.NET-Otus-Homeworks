@@ -19,10 +19,10 @@ namespace PromoCodeFactory.WebHost.Controllers
         : ControllerBase
     {
 
-        private IRepository<PromoCode> _promoCodeRepository;
-        private IRepository<CustomerPreference> _customerPreferenceRepository;
-        private IRepository<Customer> _customerRepository;
-        private ICodeGenerator _codeGenerator;
+        private readonly IRepository<PromoCode> _promoCodeRepository;
+        private readonly IRepository<CustomerPreference> _customerPreferenceRepository;
+        private readonly IRepository<Customer> _customerRepository;
+        private readonly ICodeGenerator _codeGenerator;
 
         public PromocodesController(
             IRepository<PromoCode> promoCodeRepository,
