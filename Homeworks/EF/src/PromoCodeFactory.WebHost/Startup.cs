@@ -1,12 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PromoCodeFactory.Core.Abstractions.Repositories;
-using PromoCodeFactory.Core.Domain.Administration;
-using PromoCodeFactory.Core.Domain.PromoCodeManagement;
-using PromoCodeFactory.DataAccess.Data;
+using PromoCodeFactory.DataAccess.DbContexts;
 using PromoCodeFactory.DataAccess.Repositories;
+using PromoCodeFactory.DataAccess.Data;
+using Microsoft.EntityFrameworkCore.Proxies;
+using PromoCodeFactory.Core.Abstractions;
+using PromoCodeFactory.Core.Random;
+using System.Linq;
 
 namespace PromoCodeFactory.WebHost
 {
@@ -17,14 +21,14 @@ namespace PromoCodeFactory.WebHost
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped(typeof(IRepository<Employee>), (x) =>
-                new InMemoryRepository<Employee>(FakeDataFactory.Employees));
-            services.AddScoped(typeof(IRepository<Role>), (x) =>
-                new InMemoryRepository<Role>(FakeDataFactory.Roles));
-            services.AddScoped(typeof(IRepository<Preference>), (x) =>
-                new InMemoryRepository<Preference>(FakeDataFactory.Preferences));
-            services.AddScoped(typeof(IRepository<Customer>), (x) =>
-                new InMemoryRepository<Customer>(FakeDataFactory.Customers));
+
+            services.AddDbContext<CustomersDbContext>(options => options
+            .UseSqlite("Data Source=PromoCodesFactory.sqlite")
+            .UseLazyLoadingProxies()
+            );
+            
+            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped(typeof(ICodeGenerator), typeof(HexPromoCodeGenerator));
 
             services.AddOpenApiDocument(options =>
             {
@@ -43,6 +47,23 @@ namespace PromoCodeFactory.WebHost
             else
             {
                 app.UseHsts();
+            }
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<CustomersDbContext>();
+                
+                // Disabled for Homework task 8
+                // dbContext.Database.EnsureDeleted();
+                
+                dbContext.Database.EnsureCreated();
+
+                if (!dbContext.Customers.Any())
+                {
+                    dbContext.Preferences.AddRange(FakeDataFactory.Preferences);
+                    dbContext.Customers.AddRange(FakeDataFactory.Customers);
+                    dbContext.SaveChanges();
+                }
             }
 
             app.UseOpenApi();
