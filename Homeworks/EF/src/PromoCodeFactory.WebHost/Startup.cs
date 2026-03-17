@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PromoCodeFactory.Core.Abstractions.Repositories;
@@ -16,6 +17,13 @@ namespace PromoCodeFactory.WebHost
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -23,10 +31,10 @@ namespace PromoCodeFactory.WebHost
             services.AddControllers();
 
             services.AddDbContext<CustomersDbContext>(options => options
-            .UseSqlite("Data Source=PromoCodesFactory.sqlite")
+            .UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
             .UseLazyLoadingProxies()
             );
-            
+
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped(typeof(ICodeGenerator), typeof(HexPromoCodeGenerator));
 
@@ -52,11 +60,8 @@ namespace PromoCodeFactory.WebHost
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetService<CustomersDbContext>();
-                
-                // Disabled for Homework task 8
-                // dbContext.Database.EnsureDeleted();
-                
-                dbContext.Database.EnsureCreated();
+
+                dbContext.Database.Migrate();
 
                 if (!dbContext.Customers.Any())
                 {
