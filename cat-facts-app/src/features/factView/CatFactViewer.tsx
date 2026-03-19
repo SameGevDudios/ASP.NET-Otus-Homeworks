@@ -12,7 +12,13 @@ export const CatFactViewer = () => {
       <button 
         onClick={fetchFact} 
         disabled={isLoading}
-        style={{ padding: '10px 20px', cursor: 'pointer', fontSize: '16px' }}
+        style={{ 
+          padding: '10px 20px', 
+          cursor: 'pointer', 
+          fontSize: '16px', 
+          borderRadius: 16,
+          marginTop: '12px'
+         }}
       >
         {isLoading ? 'Загрузка...' : 'Запросить данные'}
       </button>
