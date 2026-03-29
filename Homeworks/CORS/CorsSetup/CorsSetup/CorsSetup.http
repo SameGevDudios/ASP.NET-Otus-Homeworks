@@ -1,0 +1,6 @@
+@CorsSetup_HostAddress = http://localhost:5232
+
+GET {{CorsSetup_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
