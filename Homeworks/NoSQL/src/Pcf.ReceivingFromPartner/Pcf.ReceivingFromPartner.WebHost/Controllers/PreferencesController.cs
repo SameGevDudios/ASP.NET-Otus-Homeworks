@@ -17,9 +17,9 @@ namespace Pcf.ReceivingFromPartner.WebHost.Controllers
     public class PreferencesController
         : ControllerBase
     {
-        private readonly IRepository<Preference> _preferencesRepository;
+        private readonly IPreferencesCacheRepository _preferencesRepository;
 
-        public PreferencesController(IRepository<Preference> preferencesRepository)
+        public PreferencesController(IPreferencesCacheRepository preferencesRepository)
         {
             _preferencesRepository = preferencesRepository;
         }
