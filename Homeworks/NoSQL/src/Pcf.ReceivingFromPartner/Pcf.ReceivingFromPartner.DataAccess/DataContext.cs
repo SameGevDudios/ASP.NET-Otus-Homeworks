@@ -22,7 +22,7 @@ namespace Pcf.ReceivingFromPartner.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            modelBuilder.Ignore<Preference>();
         }
     }
 }
