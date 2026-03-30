@@ -35,7 +35,15 @@ namespace Pcf.ReceivingFromPartner.WebHost
         {
             services.AddControllers().AddMvcOptions(x=> 
                 x.SuppressAsyncSuffixInActionNames = false);
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration.GetConnectionString("Redis") ?? "localhost:6379";
+                options.InstanceName = "ReceivingFromPartner_";
+            });
+
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped<IPreferencesCacheRepository, RedisPreferencesRepository>();
             services.AddScoped<INotificationGateway, NotificationGateway>();
             services.AddScoped<IDbInitializer, EfDbInitializer>();
 
