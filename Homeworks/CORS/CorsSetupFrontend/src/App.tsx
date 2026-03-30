@@ -15,7 +15,7 @@ function App() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(API_URL);
+        const response = await fetch(`${API_URL}/WeatherForecast`);
         
         if (!response.ok) {
           throw new Error(`Ошибка: ${response.status}`);
