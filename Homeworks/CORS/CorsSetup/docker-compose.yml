@@ -1,0 +1,25 @@
+services:
+  api:
+    image: samegevdudios/cors-setup-api:v1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cors-setup
+    networks:
+      - backend_network
+
+  proxy:
+    image: samegevdudios/cors-setup-proxy:v1
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8081:80"
+    depends_on:
+      - api
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    driver: bridge

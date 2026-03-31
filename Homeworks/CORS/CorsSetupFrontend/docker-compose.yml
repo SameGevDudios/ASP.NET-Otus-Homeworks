@@ -1,0 +1,11 @@
+services:
+  cors-frontend:
+    image: samegevdudios/cors-setup-frontend:v1
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_BASE_URL=YOUR_URL_HERE
+    ports:
+      - "80:80"
+    restart: always
