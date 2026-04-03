@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "PromoCodeFactory.WebHost": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:53094;http://localhost:53095"
+    }
+  }
+}
